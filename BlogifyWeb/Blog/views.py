@@ -1,17 +1,33 @@
 from django.shortcuts import render
 from django.views import generic
 from .models import Post
-from rest_framework import viewsets
+
 
 # Create your views here.
 
-
-class PostList(generic.ListView):
-    queryset = Post.objects.filter(status=1).order_by('-created_on')
-    template_name = 'index.html'
-
-
-class PostDetail(generic.DetailView):
+class HomePageView(generic.ListView):
     model = Post
-    template_name = 'post_detail.html'
+    template_name = 'homepage.html'
+    ordering = ['-created_on']
 
+
+class PostView(generic.DetailView):
+    model = Post
+    template_name = "post_details.html"
+
+
+class CreatePost(generic.CreateView):
+    model = Post
+    template_name = "create_post.html"
+    fields = ("title", "content")
+
+
+class EditPost(generic.UpdateView):
+    model = Post
+    template_name = "edit-post.html"
+    fields = ("title", "content")
+
+
+class DeletePost(generic.DeleteView):
+    model = Post
+    template_name = "delete_post.html"
