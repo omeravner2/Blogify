@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.views import generic
-from .models import Post
+from .models import Post, Comment
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
@@ -56,3 +56,8 @@ def LikeView(request, pk):
         liked = True
     return HttpResponseRedirect(reverse("post-details", args=[str(pk)]))
 
+
+class CreateCommentView(generic.CreateView):
+    model = Comment
+    template_name = "create_comment.html"
+    fields = '__all__'
