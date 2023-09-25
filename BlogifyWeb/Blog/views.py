@@ -21,6 +21,7 @@ class HomePageView(generic.ListView):
         context = super(HomePageView, self).get_context_data(*args, **kwargs)
         context["total_likes"] = total_likes
         context["liked"] = liked
+        return context
 
 
 class PostView(generic.DetailView):
