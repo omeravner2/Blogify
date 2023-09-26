@@ -47,7 +47,7 @@ class DeletePost(generic.DeleteView):
     template_name = "delete_post.html"
 
 
-def LikeView(request, pk):
+def likeview(request, pk):
     post = Post.objects.get(id=pk)
     liked = False
     if post.likes.filter(id=request.user.id).exist():
@@ -58,12 +58,10 @@ def LikeView(request, pk):
     return HttpResponseRedirect(reverse("post-details", args=[str(pk)]))
 
 
-
 class ProfileView(generic.DetailView):
     model = Profile
     template_name = "profile-page.html"
     fields = '__all__'
-
 
 
 class CreateCommentView(generic.CreateView):
