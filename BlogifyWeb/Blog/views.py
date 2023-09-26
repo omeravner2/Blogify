@@ -1,35 +1,23 @@
 from django.shortcuts import render, get_object_or_404
 from django.views import generic
 from .models import Post, Profile, Comment
-
+from rest_framework import viewsets
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from .serializers import *
 
 
 # Create your views here.
 
-class HomePageView(generic.ListView):
-    model = Post
-    template_name = 'homepage.html'
-    ordering = ['-created_on']
-
-    def get_context_data(self, *args, **kwargs):
-        post = Post.objects.get(id=self.kwargs)
-        total_likes = post.get_likes_count()
-        liked = False
-        if post.likes.filter(id=self.request.user.id).exist():
-            liked = True
-        context = super(HomePageView, self).get_context_data(*args, **kwargs)
-        context["total_likes"] = total_likes
-        context["liked"] = liked
-        return context
 
 
-class PostView(generic.DetailView):
-    model = Post
-    template_name = "post_details.html"
+
+class PostView(viewsets.ModelViewSet):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
 
 
+"""
 class CreatePost(generic.CreateView):
     model = Post
     template_name = "create_post.html"
@@ -44,28 +32,14 @@ class EditPost(generic.UpdateView):
 
 class DeletePost(generic.DeleteView):
     model = Post
-    template_name = "delete_post.html"
+    template_name = "delete_post.html" """
 
 
-def likeview(request, pk):
-    post = Post.objects.get(id=pk)
-    liked = False
-    if post.likes.filter(id=request.user.id).exist():
-        post.likes.remove(request.user)
-    else:
-        post.likes.add(request.user)
-        liked = True
-    return HttpResponseRedirect(reverse("post-details", args=[str(pk)]))
+class ProfileView(viewsets.ModelViewSet):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
 
 
-class ProfileView(generic.DetailView):
-    model = Profile
-    template_name = "profile-page.html"
-    fields = '__all__'
-
-
-class CreateCommentView(generic.CreateView):
-    model = Comment
-    template_name = "create_comment.html"
-    fields = '__all__'
-
+class CommentView(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = ProfileSerializer

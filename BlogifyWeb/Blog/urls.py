@@ -1,14 +1,19 @@
 from . import views
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.register(r'post', views.PostView)
+router.register(r'comment', views.CommentView)
+router.register(r'profile', views.ProfileView)
 
 urlpatterns = [
-    path('', views.HomePageView.as_view(), name="homepage"),
-    path('post/<slug:slug>', views.PostView.as_view(), name="post-details"),
-    path('create_post/', views.CreatePost.as_view(), name="create-post"),
-    path('edit_post/<slug:slug>', views.EditPost.as_view(), name="edit-post"),
-    path('post/<slug:slug>/delete', views.DeletePost.as_view(), name="delete-post"),
-    path('like/<int:pk>', views.likeview, name="like-post"),
-    path('profile/<int:pk>', views.ProfileView.as_view(), name="profile-details"),
-    path('post/<slug:slug>/comment', views.CreateCommentView.as_view(), name="create-comment")
+    path('api/', include(router.urls)),
+
+
 
 ]
+""" path('', views.HomePageView.as_view(), name="homepage"),
+   path('like/<int:pk>', views.likeview, name="like-post"),
+   path('profile/<int:pk>', views.ProfileView name="profile-details"),
+   path('post/<slug:slug>/comment', views.CreateCommentView.as_view(), name="create-comment")"""
