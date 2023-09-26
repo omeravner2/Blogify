@@ -5,11 +5,10 @@ from rest_framework import viewsets
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from .serializers import *
+from rest_framework_swagger.views import get_swagger_view
 
 
 # Create your views here.
-
-
 
 
 class PostView(viewsets.ModelViewSet):
@@ -42,4 +41,4 @@ class ProfileView(viewsets.ModelViewSet):
 
 class CommentView(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
-    serializer_class = ProfileSerializer
+    serializer_class = CommentSerializer

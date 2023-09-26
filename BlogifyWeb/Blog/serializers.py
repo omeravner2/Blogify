@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Post, Comment, Profile
-
+from BlogifyWeb.accounts.serializers import *
 
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,6 +15,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Profile
-        fields = "__all__"
+        fields = ('id', 'bio', 'profile_picture', 'user.name')
