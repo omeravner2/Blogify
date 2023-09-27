@@ -11,7 +11,7 @@ class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     content = RichTextField(blank=True, null=True)
     created_on = models.DateTimeField(auto_now_add=True)
-    likes = models.ManyToManyField(User, related_name="blog_posts")
+    likes = models.ManyToManyField(User, related_name="blog_posts", blank=True)
 
     def get_likes_count(self):
         return self.likes.count()
@@ -31,7 +31,7 @@ class Comment(models.Model):
 
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField()
     profile_picture = models.ImageField(null=True, blank=True, upload_to="images/Profiles/")
 

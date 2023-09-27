@@ -1,11 +1,11 @@
 from django.shortcuts import render, get_object_or_404
-from django.views import generic
 from .models import Post, Profile, Comment
 from rest_framework import viewsets
-from django.http import HttpResponseRedirect
-from django.urls import reverse
+from django.contrib.auth.models import User
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from django.views import generic
 from .serializers import *
-from rest_framework_swagger.views import get_swagger_view
 
 
 # Create your views here.
@@ -15,23 +15,20 @@ class PostView(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
+    @action(detail=True, methods=['GET'])
+    def comments(self, request, pk=None):
+        post = self.get_object()
+        comments = Comment.objects.filter(post=post)
+        serializer = CommentSerializer(comments, many=True)
+        return Response(serializer.data)
 
-"""
-class CreatePost(generic.CreateView):
-    model = Post
-    template_name = "create_post.html"
-    fields = ("title", "content")
-
-
-class EditPost(generic.UpdateView):
-    model = Post
-    template_name = "edit-post.html"
-    fields = ("title", "content")
-
-
-class DeletePost(generic.DeleteView):
-    model = Post
-    template_name = "delete_post.html" """
+    @action(detail=True, methods=['GET'])
+    def likes(self, request, pk=None):
+        post = self.get_object()
+        likes = post.likes.values()
+        print(likes)
+        serializer = LikeSerializer(likes, many=True)
+        return Response(serializer.data)
 
 
 class ProfileView(viewsets.ModelViewSet):
