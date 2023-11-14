@@ -9,7 +9,8 @@ class Post(models.Model):
     title = models.CharField(max_length=200, unique=True)
     slug = AutoSlugField(populate_from='title', editable=True, always_update=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
-    content = RichTextField(blank=True, null=True)
+    content = models.TextField(blank=True, null=True)
+    photo = models.ImageField(null=True, blank=True, upload_to="images/Posts/")
     created_on = models.DateTimeField(auto_now_add=True)
     likes = models.ManyToManyField(User, related_name="blog_posts", blank=True)
 
