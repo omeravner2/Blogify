@@ -8,7 +8,14 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ['title', 'slug', 'author', 'content', 'photo', 'created_on', 'likes_count']
+        fields = ['title', 'id', 'slug', 'author', 'content', 'photo', 'created_on', 'likes_count']
+
+    def to_representation(self, instance):
+        request = self.context.get('request')
+        data = super().to_representation(instance)
+        if instance.photo:
+            data['photo'] = request.build_absolute_uri(instance.photo.url)
+        return data
 
 
 class CommentDetailsSerializer(serializers.ModelSerializer):
@@ -34,6 +41,28 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Profile
         fields = ('id', 'bio', 'profile_picture', 'username', 'first_name', 'last_name')
 
+    def to_representation(self, instance):
+        request = self.context.get('request')
+        data = super().to_representation(instance)
+        if instance.profile_picture:
+            data['profile_picture'] = request.build_absolute_uri(instance.profile_picture.url)
+        return data
+
+
+class ProfilePicSerializer(serializers.ModelSerializer):
+    username = serializers.ReadOnlyField(source='user.username')
+
+    class Meta:
+        model = Profile
+        fields = ['profile_picture', 'username']
+
+    def to_representation(self, instance):
+        request = self.context.get('request')
+        data = super().to_representation(instance)
+        if instance.profile_picture:
+            data['profile_picture'] = request.build_absolute_uri(instance.profile_picture.url)
+        return data
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -53,3 +82,4 @@ class PostProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ['title', 'content', 'created_on']
+
