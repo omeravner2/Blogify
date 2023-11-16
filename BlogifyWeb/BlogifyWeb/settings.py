@@ -41,7 +41,9 @@ INSTALLED_APPS = [
     'rest_framework_swagger',
     'drf_yasg',
     'corsheaders',
-    'accounts'
+    'accounts',
+    'allauth',
+    'allauth.account',
 ]
 
 MIDDLEWARE = [
@@ -52,7 +54,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware'
+    'corsheaders.middleware.CorsMiddleware',
+    'allauth.account.middleware.AccountMiddleware'
+
 ]
 CORS_ALLOWED_ORIGINS = ['http://localhost:3000', ]
 
@@ -130,3 +134,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+AUTHENTICATION_BACKENDS = [
+    # ...
+    'allauth.account.auth_backends.AuthenticationBackend',
+    # ...
+]
