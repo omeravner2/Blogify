@@ -9,6 +9,7 @@ from .serializers import *
 from django.http import JsonResponse
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+import json
 
 
 # Create your views here.
@@ -60,9 +61,10 @@ class ProfileView(viewsets.ModelViewSet):
 
 @api_view(['GET'])
 def posts_list(request):
-
+    userid = request.GET.get('userid')
     posts = Post.objects.all()
     data = []
+    list_of_posts = []
     for post in posts:
         post_author = post.author
         matching_profile = Profile.objects.get(user=post_author)
@@ -70,16 +72,15 @@ def posts_list(request):
         post_data = PostSerializer(post, context={'request': request}).data
         print(post_data)
         post_data.update(profile_pic)
-        data.append(post_data)
+        list_of_posts.append(post_data)
+    data.append({'posts': list_of_posts, 'user_profile': current_user(userid, request)})
     return Response(data)
 
 
-@api_view(['GET'])
-def current_user(request):
-    userid = request.user
+def current_user(userid, request):
     matching_profile = Profile.objects.get(user=userid)
     serializer = ProfileSerializer(matching_profile,  context={'request': request})
-    return Response(serializer.data)
+    return serializer.data
 
 
 class CommentView(viewsets.ModelViewSet):

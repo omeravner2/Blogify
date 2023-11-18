@@ -11,7 +11,7 @@ router.register(r'profile', views.ProfileView)
 urlpatterns = [
     path('api/', include(router.urls)),
     path('api/posts', views.posts_list),
-    path('api/my-profile', views.current_user)
+    #path('api/my-profile', views.current_user)
 
 
 ]

@@ -26,6 +26,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -42,11 +43,10 @@ INSTALLED_APPS = [
     'drf_yasg',
     'corsheaders',
     'accounts',
-    'allauth',
-    'allauth.account',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -54,11 +54,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
-    'allauth.account.middleware.AccountMiddleware'
+
 
 ]
-CORS_ALLOWED_ORIGINS = ['http://localhost:3000', ]
+CORS_ALLOW_ALL_ORIGINS = True
 
 
 ROOT_URLCONF = 'BlogifyWeb.urls'
@@ -133,9 +132,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
 AUTHENTICATION_BACKENDS = [
-    # ...
-    'allauth.account.auth_backends.AuthenticationBackend',
-    # ...
+    'django.contrib.auth.backends.ModelBackend',
 ]
