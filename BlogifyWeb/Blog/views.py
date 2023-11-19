@@ -23,16 +23,28 @@ class PostView(viewsets.ModelViewSet):
     def comments(self, request, pk=None):
         post = self.get_object()
         comments = Comment.objects.filter(post=post)
-        serializer = CommentDetailsSerializer(comments, many=True)
+        serializer = CommentSerializer(comments, many=True)
         return Response(serializer.data)
 
     @action(detail=True, methods=['GET'])
     def likes(self, request, pk=None):
         post = self.get_object()
         liking_users = post.likes.all()
+        users = [user.id for user in liking_users]
         usernames = [user.username for user in liking_users]
-        usernames = {'usernames': usernames}
+        usernames = {'usernames': usernames, 'users_id': users}
         return JsonResponse(usernames)
+
+    @action(detail=True, methods=['patch'])
+    def toggle_like(self, request, pk=None,  user_id=None):
+        post = self.get_object()
+        user = User.objects.get(id=user_id)
+        if user in post.likes.all():
+            post.likes.remove(user)
+            return Response({'message': 'Post unliked'}, status=200)
+        else:
+            post.likes.add(user)
+            return Response({'message': 'Post liked'}, status=200)
 
 
 @receiver(post_save, sender=User)

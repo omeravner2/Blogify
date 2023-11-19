@@ -11,6 +11,8 @@ router.register(r'profile', views.ProfileView)
 urlpatterns = [
     path('api/', include(router.urls)),
     path('api/posts', views.posts_list),
+    path('api/posts/<int:pk>/toggle_like/<int:user_id>/', views.PostView.as_view({'patch': 'toggle_like'}),
+         name='post-toggle-like'),
 
 
 

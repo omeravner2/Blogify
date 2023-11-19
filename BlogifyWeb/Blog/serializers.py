@@ -19,18 +19,14 @@ class PostSerializer(serializers.ModelSerializer):
         return data
 
 
-class CommentDetailsSerializer(serializers.ModelSerializer):
+class CommentSerializer(serializers.ModelSerializer):
     author_name = serializers.ReadOnlyField(source='author.username')
 
     class Meta:
         model = Comment
-        fields = ('author_name', 'body', 'created_on', 'author', 'id')
+        fields = ('author_name', 'body', 'created_on', 'author', 'id', 'post')
 
 
-class CommentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Comment
-        fields = '__all__'
 
 
 class ProfileSerializer(serializers.ModelSerializer):
