@@ -8,7 +8,8 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ['title', 'id', 'slug', 'author', 'content', 'photo', 'created_on', 'likes_count']
+        fields = ['title', 'id', 'author', 'content', 'photo', 'created_on', 'likes_count']
+        read_only_fields = ['slug']
 
     def to_representation(self, instance):
         request = self.context.get('request')
@@ -23,7 +24,7 @@ class CommentDetailsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ('author_name', 'body', 'created_on')
+        fields = ('author_name', 'body', 'created_on', 'author', 'id')
 
 
 class CommentSerializer(serializers.ModelSerializer):

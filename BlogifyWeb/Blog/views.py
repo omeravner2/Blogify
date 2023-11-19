@@ -23,7 +23,7 @@ class PostView(viewsets.ModelViewSet):
     def comments(self, request, pk=None):
         post = self.get_object()
         comments = Comment.objects.filter(post=post)
-        serializer = CommentSerializer(comments, many=True)
+        serializer = CommentDetailsSerializer(comments, many=True)
         return Response(serializer.data)
 
     @action(detail=True, methods=['GET'])
@@ -50,27 +50,29 @@ class ProfileView(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
 
-    @action(detail=True, methods=['GET'])
-    def posts(self, request, pk=None):
-        profile = self.get_object()
+    def retrieve(self, request, *args, **kwargs):
+        pk = kwargs.get('pk')
+        profile = Profile.objects.get(pk=pk)
         user = profile.user
-        posts = Post.objects.filter(author=user)
-        serializer = PostProfileSerializer(posts, many=True)
-        return Response(serializer.data)
+        profile = ProfileSerializer(profile, context={'request': request}).data
+        posts = Post.objects.filter(author=user).order_by('-created_on')
+        serializer = PostSerializer(posts, context={'request': request}, many=True)
+        data = {'profile': profile, 'posts': serializer.data}
+        return Response(data)
 
 
 @api_view(['GET'])
 def posts_list(request):
     userid = request.GET.get('userid')
-    posts = Post.objects.all()
+    posts = Post.objects.all().order_by('-created_on')
     data = []
     list_of_posts = []
     for post in posts:
         post_author = post.author
+        print("post-author " + str(post_author))
         matching_profile = Profile.objects.get(user=post_author)
         profile_pic = ProfilePicSerializer(matching_profile, context={'request': request}).data
         post_data = PostSerializer(post, context={'request': request}).data
-        print(post_data)
         post_data.update(profile_pic)
         list_of_posts.append(post_data)
     data.append({'posts': list_of_posts, 'user_profile': current_user(userid, request)})
