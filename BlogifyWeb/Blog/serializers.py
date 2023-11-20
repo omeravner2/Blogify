@@ -27,8 +27,6 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = ('author_name', 'body', 'created_on', 'author', 'id', 'post')
 
 
-
-
 class ProfileSerializer(serializers.ModelSerializer):
     username = serializers.ReadOnlyField(source='user.username')
     first_name = serializers.ReadOnlyField(source='user.first_name')

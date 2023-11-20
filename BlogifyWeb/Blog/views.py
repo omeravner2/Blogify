@@ -39,12 +39,23 @@ class PostView(viewsets.ModelViewSet):
     def toggle_like(self, request, pk=None,  user_id=None):
         post = self.get_object()
         user = User.objects.get(id=user_id)
+        remove = False
+        add = False
         if user in post.likes.all():
             post.likes.remove(user)
-            return Response({'message': 'Post unliked'}, status=200)
+            remove = True
         else:
             post.likes.add(user)
-            return Response({'message': 'Post liked'}, status=200)
+            add = True
+        liking_users = post.likes.all()
+        users = [user.id for user in liking_users]
+        usernames = [user.username for user in liking_users]
+        usernames = {'usernames': usernames, 'users_id': users}
+        if remove:
+            return Response({'message': 'Post unliked', 'data': usernames}, status=200)
+        elif add:
+            return Response({'message': 'Post liked', 'data': usernames}, status=200)
+
 
 
 @receiver(post_save, sender=User)
