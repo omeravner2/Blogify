@@ -9,6 +9,7 @@ from .serializers import *
 from django.http import JsonResponse
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django.core.paginator import Paginator
 import json
 
 
@@ -86,11 +87,15 @@ class ProfileView(viewsets.ModelViewSet):
 
 @api_view(['GET'])
 def posts_list(request):
+
     userid = request.GET.get('userid')
     posts = Post.objects.all().order_by('-created_on')
+    paginator = Paginator(posts, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     data = []
     list_of_posts = []
-    for post in posts:
+    for post in page_obj:
         post_author = post.author
         print("post-author " + str(post_author))
         matching_profile = Profile.objects.get(user=post_author)
