@@ -9,7 +9,7 @@ from .serializers import *
 from django.http import JsonResponse
 from django.dispatch import receiver
 from django.db.models.signals import post_save
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage
 import json
 
 
@@ -91,9 +91,11 @@ def posts_list(request):
     userid = request.GET.get('userid')
     posts = Post.objects.all().order_by('-created_on')
     paginator = Paginator(posts, 10)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    data = []
+    page_number = request.GET.get('page', 1)
+    try:
+        page_obj = paginator.page(page_number)
+    except EmptyPage:
+        return Response([])
     list_of_posts = []
     for post in page_obj:
         post_author = post.author
@@ -103,7 +105,7 @@ def posts_list(request):
         post_data = PostSerializer(post, context={'request': request}).data
         post_data.update(profile_pic)
         list_of_posts.append(post_data)
-    data.append({'posts': list_of_posts, 'user_profile': current_user(userid, request)})
+    data = {'posts': list_of_posts, 'user_profile': current_user(userid, request)}
     return Response(data)
 
 
